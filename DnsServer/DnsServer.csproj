@@ -7,4 +7,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\DnsServer-Core\DnsServer-Core.csproj" />
+    </ItemGroup>
+
 </Project>
