@@ -37,6 +37,41 @@ for (var i = 0; i < answerCount; i++)
         return ret;
     }
 
+    public void Write(NetworkBinaryWriter writer)
+    {
+        writer.Write(ID);
+        var flags = (ushort) (IsResponse ? 0x8000 : 0);
+        flags |= (ushort) (OPcode << 11);
+        flags |= (ushort) (AuthoritativeAnswer ? 0x0400 : 0);
+        flags |= (ushort) (TrunCation ? 0x0200 : 0);
+        flags |= (ushort) (RecursionDesired ? 0x0100 : 0);
+        flags |= (ushort) (RecursionAvailable ? 0x0080 : 0);
+        flags |= (ushort) (ResponseCode & 0x000F);
+        writer.Write(flags);
+        writer.Write((ushort) Questions.Count);
+        writer.Write((ushort) Answers.Count);
+        //writer.Write((ushort) AuthorityRecords.Count);
+        //writer.Write((ushort) AdditionalRecords.Count);
+        writer.Write((ushort) 0);
+        writer.Write((ushort) 0);
+        foreach (var question in Questions)
+        {
+            question.Write(writer);
+        }
+        foreach (var answer in Answers)
+        {
+            answer.Write(writer);
+        }
+       // foreach (var authorityRecord in AuthorityRecords)
+       // {
+       //     authorityRecord.Write(writer);
+       // }
+       // foreach (var additionalRecord in AdditionalRecords)
+       // {
+       //     additionalRecord.Write(writer);
+       // }
+    }
+
     public int ResponseCode { get; set; }
 
     public bool RecursionAvailable { get; set; }
@@ -53,4 +88,5 @@ for (var i = 0; i < answerCount; i++)
 
     public ushort ID { get; set; }
     public List<Question> Questions { get; set; } = new();
+    public List<Answer> Answers { get; set; } = new();
 }

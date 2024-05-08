@@ -11,6 +11,12 @@ public class Question
         
         return ret;
     }
+    public void Write(NetworkBinaryWriter writer)
+    {
+        writer.WriteStringSequence(Name);
+        writer.Write(Type);
+        writer.Write(Class);
+    }
 
     public ushort Type { get; set; }
     public ushort Class { get; set; }
