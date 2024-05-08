@@ -8,10 +8,13 @@ public class DnsServer
 {
     private readonly IPEndPoint endpoint;
 
-    public DnsServer(IPEndPoint endpoint)
+    public DnsServer(IPEndPoint endpoint, Func< Question, Answer> callback)
     {
         this.endpoint= endpoint;
+        this.callback= callback;
     }
+
+    public Func<Question, Answer> callback { get; set; }
 
     public void Listen()
     {
@@ -30,7 +33,9 @@ public class DnsServer
             responseMessage.Questions= message.Questions;
             foreach (var x in responseMessage.Questions)
             {
-                responseMessage.Answers.Add(new Answer(){Name = x.Name, Type = x.Type, Class = x.Class, TTL = 1000, Data = new byte[] {1, 2, 3, 4}});
+                var answer = callback(x);
+                if(answer!=null)
+                responseMessage.Answers.Add(answer);
             }
             var responseStream=new MemoryStream();
             var writer=new NetworkBinaryWriter(responseStream);

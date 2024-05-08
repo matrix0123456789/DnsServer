@@ -6,7 +6,12 @@ public class Question
     {
         var ret = new Question();
         ret.Name = reader.ReadStringSequence();
-        ret.Type = reader.ReadUInt16();
+        var typeInt=reader.ReadUInt16();
+        if (typeInt <= 16)
+            ret.Type = (QType)typeInt;
+        else
+            ret.Type= QType.Unknown;
+        
         ret.Class = reader.ReadUInt16();
         
         return ret;
@@ -14,11 +19,11 @@ public class Question
     public void Write(NetworkBinaryWriter writer)
     {
         writer.WriteStringSequence(Name);
-        writer.Write(Type);
+        writer.Write((ushort)Type);
         writer.Write(Class);
     }
 
-    public ushort Type { get; set; }
+    public QType Type { get; set; }
     public ushort Class { get; set; }
 
     public List<string> Name { get; set; }
