@@ -34,8 +34,12 @@ public class DnsServer
             foreach (var x in responseMessage.Questions)
             {
                 var answer = callback(x);
-                if(answer!=null)
-                responseMessage.Answers.Add(answer);
+                if (answer != null)
+                {
+                    answer.Name = x.Name;
+                    answer.Type = x.Type;
+                    responseMessage.Answers.Add(answer);
+                }
             }
             var responseStream=new MemoryStream();
             var writer=new NetworkBinaryWriter(responseStream);
